@@ -1,0 +1,24 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Environment & Dependencies
+.env
+.venv/
+env/
+venv/
+node_modules/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+
+# Large temporary files if any
+*.log

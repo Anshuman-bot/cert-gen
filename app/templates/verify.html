@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Public Credential Verification | CertifyPro Trust Network</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        navy: {
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- HTML5 QR Code Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Trust Header -->
+    <header class="bg-navy-900 border-b border-slate-800 text-white">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-shield-halved text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight">CertifyPro Trust Network</h1>
+                    <p class="text-[11px] text-slate-400">Official Collegiate Credential Verification Registry</p>
+                </div>
+            </div>
+            <a href="/" class="text-xs font-semibold text-slate-300 hover:text-emerald-400 flex items-center space-x-1.5 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Back to Admin Console</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-8 space-y-6">
+
+        <!-- Universal Certificate ID Search Bar & QR Scanner Toggle -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                    <h2 class="text-base font-bold text-slate-900">Verify a College Certificate</h2>
+                    <p class="text-xs text-slate-500">Enter the unique Certificate ID (e.g. CRT-2026-...) or scan the embedded QR code.</p>
+                </div>
+                <button onclick="toggleQrScanner()" id="btn-toggle-scanner" class="self-start sm:self-auto px-3.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center space-x-2 border border-slate-300 transition-all">
+                    <i class="fa-solid fa-camera text-emerald-600"></i>
+                    <span>Scan with Camera / Image</span>
+                </button>
+            </div>
+
+            <!-- QR Scanner Container (Hidden by default) -->
+            <div id="qr-scanner-wrapper" class="hidden p-4 rounded-xl bg-slate-900 text-white space-y-3">
+                <div class="flex items-center justify-between text-xs">
+                    <span class="font-bold flex items-center"><i class="fa-solid fa-qrcode mr-2 text-emerald-400"></i> Point camera at certificate QR code</span>
+                    <button onclick="toggleQrScanner()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i> Close</button>
+                </div>
+                <div id="qr-reader" class="w-full max-w-sm mx-auto overflow-hidden rounded-lg bg-black"></div>
+            </div>
+
+            <!-- Search Form -->
+            <form onsubmit="handleManualSearch(event)" class="flex gap-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                    <input type="text" id="input-cert-search" placeholder="Enter Certificate ID (e.g. CRT-2026-NH2-649910)" value="{{ cert_id or '' }}" class="w-full pl-9 pr-4 py-2 text-sm border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none uppercase font-mono">
+                </div>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all flex items-center space-x-1.5">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Verify Authenticity</span>
+                </button>
+            </form>
+        </div>
+
+        {% if cert_id %}
+            {% if cert and tamper_verified and cert.status == 'ACTIVE' %}
+            <!-- ================= VALID & GENUINE CERTIFICATE RESULT ================= -->
+            <div class="bg-white rounded-2xl border-2 border-emerald-500 shadow-xl overflow-hidden animate-in fade-in duration-300">
+                <!-- Top Verification Badge Banner -->
+                <div class="bg-gradient-to-r from-emerald-600 to-teal-700 p-6 text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center text-3xl text-emerald-200 border border-white/20 shadow-inner">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div>
+                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[11px] font-bold tracking-wider uppercase mb-1">
+                                Genuine & Official Credential
+                            </span>
+                            <h2 class="text-2xl font-black tracking-tight">Verified Authentic</h2>
+                            <p class="text-xs text-emerald-100 mt-0.5">Cryptographically signed by issuing collegiate authority</p>
+                        </div>
+                    </div>
+                    <div class="text-left sm:text-right font-mono text-xs bg-black/20 px-3.5 py-2 rounded-xl border border-white/10">
+                        <p class="text-emerald-200 text-[10px] uppercase font-bold">Certificate ID</p>
+                        <p class="font-bold text-white tracking-wider text-sm">{{ cert.id }}</p>
+                    </div>
+                </div>
+
+                <!-- Credential Integrity Details -->
+                <div class="p-6 sm:p-8 space-y-6">
+                    <!-- Participant Headline -->
+                    <div class="border-b border-slate-100 pb-6 text-center sm:text-left">
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Awarded & Issued To</p>
+                        <h3 class="text-3xl font-extrabold text-slate-900 mt-1">{{ cert.participant_name }}</h3>
+                        {% if cert.role and cert.role != 'Participant' %}
+                        <div class="inline-flex items-center space-x-1.5 mt-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold">
+                            <i class="fa-solid fa-trophy text-amber-500"></i>
+                            <span>{{ cert.role }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Meta Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 text-xs">
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                            <span class="text-slate-500 font-semibold uppercase text-[10px]">Event Name</span>
+                            <p class="font-bold text-slate-800 text-sm">{{ cert.event_name }}</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                            <span class="text-slate-500 font-semibold uppercase text-[10px]">Issuing Institution</span>
+                            <p class="font-bold text-slate-800 text-sm">{{ cert.organization }}</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                            <span class="text-slate-500 font-semibold uppercase text-[10px]">Date of Conferral</span>
+                            <p class="font-bold text-slate-800 text-sm">{{ cert.issue_date }}</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
+                            <span class="text-slate-500 font-semibold uppercase text-[10px]">Digital Audit Trail</span>
+                            <p class="font-bold text-slate-800 text-sm">Verified {{ cert.view_count }} times (Active)</p>
+                        </div>
+                    </div>
+
+                    <!-- Cryptographic Tamper Shield Banner -->
+                    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex items-start space-x-3 text-xs">
+                        <i class="fa-solid fa-fingerprint text-emerald-600 text-lg mt-0.5"></i>
+                        <div>
+                            <strong class="font-bold block">Cryptographic Security Verification: 100% Intact</strong>
+                            <span class="text-emerald-700">Digital SHA-256 footprint (<code class="bg-emerald-100 px-1 py-0.5 rounded font-mono">{{ cert.cert_hash[:16] }}...{{ cert.cert_hash[-8:] }}</code>) matches the immutable issuing record. The credential is valid and untampered.</span>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Visual Preview -->
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center">
+                            <i class="fa-solid fa-file-image mr-1.5 text-slate-500"></i> Official Document Replica
+                        </h4>
+                        <div class="rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-slate-100">
+                            <img src="/certificates-files/{{ cert.id }}.png" alt="Official Certificate" class="w-full h-auto">
+                        </div>
+                    </div>
+
+                    <!-- Download Options -->
+                    <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                        <span class="text-xs text-slate-400">Issued through CertifyPro Trust Architecture</span>
+                        <div class="flex items-center space-x-3">
+                            <a href="/api/certificates/{{ cert.id }}/download/png" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs border border-slate-300 transition-all flex items-center space-x-1.5">
+                                <i class="fa-solid fa-file-image text-blue-600"></i>
+                                <span>Download Official PNG</span>
+                            </a>
+                            <a href="/api/certificates/{{ cert.id }}/download/pdf" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-sm transition-all flex items-center space-x-1.5">
+                                <i class="fa-solid fa-file-pdf"></i>
+                                <span>Download Official Vector PDF</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% elif cert and cert.status == 'REVOKED' %}
+            <!-- ================= REVOKED CERTIFICATE ================= -->
+            <div class="bg-white rounded-2xl border-2 border-red-500 shadow-lg p-8 text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 mx-auto flex items-center justify-center text-3xl">
+                    <i class="fa-solid fa-ban"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-red-700">Certificate Has Been Revoked</h3>
+                <p class="text-sm text-slate-600 max-w-md mx-auto">This credential (<code class="font-mono font-bold">{{ cert_id }}</code>) was invalidated by the issuing institution and is no longer recognized as genuine.</p>
+            </div>
+
+            {% else %}
+            <!-- ================= INVALID / NOT FOUND CERTIFICATE ================= -->
+            <div class="bg-white rounded-2xl border-2 border-amber-400 shadow-lg p-8 text-center space-y-4">
+                <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-600 mx-auto flex items-center justify-center text-3xl">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800">Credential Not Found</h3>
+                <p class="text-sm text-slate-600 max-w-md mx-auto">No certificate record exists matching ID <code class="font-mono font-bold bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{{ cert_id }}</code>. Please inspect the code carefully or scan the original QR code.</p>
+                <div class="pt-2">
+                    <a href="/verify" class="px-4 py-2 rounded-lg bg-slate-800 text-white text-xs font-bold hover:bg-slate-700 transition-all">Search Another ID</a>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+        <!-- Default Landing View: Trust Guide -->
+        <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm text-center space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center text-2xl">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">Instant Collegiate Credential Verification</h3>
+            <p class="text-sm text-slate-500 max-w-lg mx-auto">
+                CertifyPro uses SHA-256 cryptographic signatures and collision-resistant IDs to eliminate fake credentials. Enter an ID above or scan the QR code located on any official certificate.
+            </p>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-xs text-slate-500 text-center mt-auto">
+        <p>CertifyPro Official Verification Registry &bull; 2026 Academic Trust Initiative</p>
+    </footer>
+
+    <script>
+        function handleManualSearch(e) {
+            e.preventDefault();
+            const id = document.getElementById('input-cert-search').value.trim();
+            if (id) {
+                window.location.href = `/verify/${encodeURIComponent(id)}`;
+            }
+        }
+
+        let html5QrCode = null;
+        let isScannerRunning = false;
+
+        function toggleQrScanner() {
+            const wrapper = document.getElementById('qr-scanner-wrapper');
+            if (wrapper.classList.contains('hidden')) {
+                wrapper.classList.remove('hidden');
+                startScanner();
+            } else {
+                wrapper.classList.add('hidden');
+                stopScanner();
+            }
+        }
+
+        function startScanner() {
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode("qr-reader");
+            }
+            Html5Qrcode.getCameras().then(cameras => {
+                if (cameras && cameras.length) {
+                    const cameraId = cameras[0].id;
+                    html5QrCode.start(
+                        cameraId,
+                        { fps: 10, qrbox: { width: 250, height: 250 } },
+                        (decodedText) => {
+                            stopScanner();
+                            // Check if decodedText is a URL
+                            if (decodedText.includes('/verify/')) {
+                                window.location.href = decodedText;
+                            } else {
+                                window.location.href = `/verify/${encodeURIComponent(decodedText)}`;
+                            }
+                        },
+                        (errorMessage) => {
+                            // ignore frame error
+                        }
+                    ).then(() => {
+                        isScannerRunning = true;
+                    }).catch(err => {
+                        console.error("Camera start error:", err);
+                    });
+                } else {
+                    alert("No camera device found on this machine.");
+                }
+            }).catch(err => {
+                console.warn("Unable to access camera:", err);
+            });
+        }
+
+        function stopScanner() {
+            if (html5QrCode && isScannerRunning) {
+                html5QrCode.stop().then(() => {
+                    isScannerRunning = false;
+                }).catch(err => console.error("Error stopping scanner", err));
+            }
+        }
+    </script>
+</body>
+</html>

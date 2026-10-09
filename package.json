@@ -1,0 +1,30 @@
+{
+  "name": "certify-pro",
+  "version": "2.0.0",
+  "description": "Enterprise College Event Certificate Issuance & Cryptographic QR Verification Platform",
+  "main": "app/main.py",
+  "scripts": {
+    "start": "python -m uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "dev": "python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload",
+    "test": "python test_e2e.py",
+    "install:python": "pip install -r requirements.txt"
+  },
+  "keywords": [
+    "certificates",
+    "verification",
+    "qr-code",
+    "fastapi",
+    "pdf-generation",
+    "college-events",
+    "cryptographic-verification",
+    "sha256"
+  ],
+  "author": "DeepMind AGY Team",
+  "license": "MIT",
+  "dependencies": {
+    "html5-qrcode": "^2.3.8"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.1"
+  }
+}

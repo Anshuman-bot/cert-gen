@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CertifyPro - Enterprise College Event Certificate Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-navy-900 border-b border-slate-800 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Brand Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                        <i class="fa-solid fa-award text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">CertifyPro</span>
+                        <span class="text-xs ml-1.5 px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-medium">College Suite 2.0</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 font-medium text-sm">
+                    <button onclick="switchTab('dashboard')" id="tab-btn-dashboard" class="nav-tab px-3 py-2 rounded-lg text-emerald-400 bg-slate-800/80 transition-all">
+                        <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('events')" id="tab-btn-events" class="nav-tab px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-calendar-check mr-1.5"></i> Events & Templates
+                    </button>
+                    <button onclick="switchTab('upload')" id="tab-btn-upload" class="nav-tab px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-file-csv mr-1.5"></i> CSV Upload & AI Clean
+                    </button>
+                    <button onclick="switchTab('review')" id="tab-btn-review" class="nav-tab px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-user-check mr-1.5"></i> Human Review <span id="nav-review-badge" class="hidden ml-1 px-1.5 py-0.2 text-xs bg-amber-500 text-slate-900 font-bold rounded-full">0</span>
+                    </button>
+                    <button onclick="switchTab('generation')" id="tab-btn-generation" class="nav-tab px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i> Bulk Generation
+                    </button>
+                    <button onclick="switchTab('emails')" id="tab-btn-emails" class="nav-tab px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+                        <i class="fa-solid fa-envelope mr-1.5"></i> Dispatch Outbox
+                    </button>
+                </nav>
+
+                <!-- Action Button: Public Verify Page -->
+                <div class="flex items-center space-x-3">
+                    <a href="/verify" target="_blank" class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs shadow-md transition-all">
+                        <i class="fa-solid fa-qrcode"></i>
+                        <span>Public Verification Portal</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-75"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= SECTION 1: DASHBOARD ================= -->
+        <section id="section-dashboard" class="space-y-6">
+            <!-- Hero Banner -->
+            <div class="bg-gradient-to-r from-navy-900 via-slate-900 to-slate-800 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-slate-700">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 mb-3">
+                        <i class="fa-solid fa-shield-halved mr-1"></i> Tamper-Proof Cryptographic Verification
+                    </span>
+                    <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
+                        College Event Certificate & Verification Engine
+                    </h1>
+                    <p class="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Automate bulk certificate issuance with AI-assisted participant data sanitation, human audit workflows, high-resolution vector PDF/PNG rendering, and instant QR verification.
+                    </p>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button onclick="switchTab('upload')" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-lg transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Upload Participant CSV</span>
+                        </button>
+                        <button onclick="switchTab('events')" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 font-semibold text-sm transition-all flex items-center space-x-2">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <span>Manage Templates</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Background visual badge -->
+                <div class="absolute -right-8 -bottom-12 opacity-10 text-white text-[240px] pointer-events-none">
+                    <i class="fa-solid fa-certificate"></i>
+                </div>
+            </div>
+
+            <!-- Stats Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="glass-card rounded-xl p-5 border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-calendar-star"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Events</p>
+                        <h3 id="stat-events" class="text-2xl font-bold text-slate-900 mt-0.5">--</h3>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Certificates Issued</p>
+                        <h3 id="stat-certs" class="text-2xl font-bold text-slate-900 mt-0.5">--</h3>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">AI Auto-Fixes Applied</p>
+                        <h3 id="stat-autofixed" class="text-2xl font-bold text-purple-700 mt-0.5">--</h3>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-xl p-5 border border-slate-200 shadow-sm flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">QR Verifications Done</p>
+                        <h3 id="stat-verifications" class="text-2xl font-bold text-slate-900 mt-0.5">--</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Recent Issued Credentials -->
+                <div class="lg:col-span-2 glass-card rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-slate-900 flex items-center">
+                            <i class="fa-solid fa-clock-rotate-left mr-2 text-emerald-600"></i> Recently Issued Certificates
+                        </h3>
+                        <button onclick="switchTab('generation')" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700">View All</button>
+                    </div>
+                    <div id="recent-certs-list" class="space-y-3">
+                        <p class="text-xs text-slate-500 italic py-4 text-center">Loading certificate stream...</p>
+                    </div>
+                </div>
+
+                <!-- AI System Health & Duplicate Guard -->
+                <div class="glass-card rounded-xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-base font-bold text-slate-900 flex items-center mb-4">
+                            <i class="fa-solid fa-robot mr-2 text-purple-600"></i> AI Data Hygiene Status
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                                <span class="text-slate-600 font-medium">Duplicate Collisions Prevented</span>
+                                <span id="stat-dups" class="font-bold text-red-600">--</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                                <span class="text-slate-600 font-medium">Email Domain Correction</span>
+                                <span class="font-bold text-emerald-600">Active (15+ providers)</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                                <span class="text-slate-600 font-medium">Fuzzy Department Normalization</span>
+                                <span class="font-bold text-indigo-600">Standardized</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                                <span class="text-slate-600 font-medium">Cryptographic Hash Type</span>
+                                <span class="font-mono text-xs bg-slate-200 px-2 py-0.5 rounded font-bold">SHA-256</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                        <span>Tamper Verification: <strong class="text-emerald-600">Enabled</strong></span>
+                        <a href="/verify" target="_blank" class="text-emerald-600 font-semibold hover:underline">Test Verification &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: EVENTS & TEMPLATES ================= -->
+        <section id="section-events" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Event & Certificate Template Hub</h2>
+                    <p class="text-sm text-slate-500">Configure event details, signatories, college branding, and award templates.</p>
+                </div>
+                <button onclick="openNewEventModal()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm shadow-sm transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Create New Event</span>
+                </button>
+            </div>
+
+            <!-- Events Grid -->
+            <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically loaded events -->
+            </div>
+
+            <!-- Built-in Certificate Templates Showcase -->
+            <div class="glass-card rounded-xl p-6 border border-slate-200 shadow-sm mt-8">
+                <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center">
+                    <i class="fa-solid fa-palette mr-2 text-indigo-600"></i> Built-in Certificate Styles & Layouts
+                </h3>
+                <p class="text-sm text-slate-500 mb-6">Each template dynamically embeds college emblems, dual signatures, and crisp QR verification codes.</p>
+                <div id="templates-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Dynamically populated templates -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 3: CSV UPLOAD & AI CLEANING ================= -->
+        <section id="section-upload" class="hidden space-y-6">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-900">Bulk Participant Upload & AI Cleaning</h2>
+                <p class="text-sm text-slate-500">Upload participant spreadsheets. Our intelligent hygiene pipeline sanitizes casing, fixes typos, maps departments, and catches duplicate registrations.</p>
+            </div>
+
+            <!-- Event Selector & Sample CSV Downloads -->
+            <div class="glass-card rounded-xl p-6 border border-slate-200 shadow-sm space-y-5">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="w-full md:w-1/2">
+                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Target College Event</label>
+                        <select id="upload-event-select" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-3 self-end">
+                        <a href="/api/samples/clean" download class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold border border-slate-300 flex items-center space-x-1.5 transition-all">
+                            <i class="fa-solid fa-download text-emerald-600"></i>
+                            <span>Sample Clean CSV</span>
+                        </a>
+                        <a href="/api/samples/dirty" download class="px-3 py-2 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold border border-amber-300 flex items-center space-x-1.5 transition-all">
+                            <i class="fa-solid fa-vial text-amber-600"></i>
+                            <span>Sample Dirty CSV (With Errors)</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Drag & Drop Zone -->
+                <div id="drop-zone" class="border-2 border-dashed border-slate-300 hover:border-emerald-500 rounded-2xl p-8 sm:p-12 text-center transition-all bg-slate-50/50 cursor-pointer flex flex-col items-center justify-center">
+                    <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mb-4">
+                        <i class="fa-solid fa-file-csv"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800">Drag & Drop your Participant CSV file here</h3>
+                    <p class="text-xs text-slate-500 mt-1">Accepts UTF-8 and ANSI CSV files with columns like Full Name, Email, College, Department, Roll No, Role</p>
+                    <input type="file" id="csv-file-input" accept=".csv" class="hidden">
+                    <button type="button" onclick="document.getElementById('csv-file-input').click()" class="mt-4 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all">
+                        Browse Files
+                    </button>
+                    <div id="file-chosen-name" class="hidden mt-3 text-xs font-mono font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200"></div>
+                </div>
+
+                <!-- Upload & Analyze Button -->
+                <div class="flex justify-end">
+                    <button id="btn-upload-analyze" onclick="handleCsvUpload()" disabled class="px-6 py-2.5 rounded-xl bg-slate-300 text-slate-500 font-bold text-sm transition-all flex items-center space-x-2 cursor-not-allowed">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Upload & Run AI Data Cleaning</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Upload Result Banner (Hidden initially) -->
+            <div id="upload-result-card" class="hidden glass-card rounded-xl p-6 border border-emerald-200 bg-emerald-50/40 shadow-sm space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-base font-bold text-emerald-900 flex items-center">
+                        <i class="fa-solid fa-circle-check text-emerald-600 mr-2 text-lg"></i>
+                        AI Hygiene Analysis Complete
+                    </h3>
+                    <button onclick="switchTab('review')" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm">
+                        Proceed to Human Review &rarr;
+                    </button>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                        <p class="text-xs text-slate-500 font-semibold">Total Records</p>
+                        <p id="res-total" class="text-xl font-bold text-slate-800">0</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                        <p class="text-xs text-emerald-600 font-semibold">Pristine Clean</p>
+                        <p id="res-clean" class="text-xl font-bold text-emerald-600">0</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                        <p class="text-xs text-purple-600 font-semibold">AI Auto-Fixed</p>
+                        <p id="res-fixed" class="text-xl font-bold text-purple-600">0</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                        <p class="text-xs text-amber-600 font-semibold">Flagged for Review</p>
+                        <p id="res-flagged" class="text-xl font-bold text-amber-600">0</p>
+                    </div>
+                    <div class="bg-white p-3 rounded-lg border border-slate-200 shadow-xs">
+                        <p class="text-xs text-red-600 font-semibold">Duplicates Caught</p>
+                        <p id="res-dups" class="text-xl font-bold text-red-600">0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: HUMAN REVIEW WORKSPACE ================= -->
+        <section id="section-review" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Human Review & Data Audit Workspace</h2>
+                    <p class="text-sm text-slate-500">Inspect AI recommendations side-by-side, edit fields inline, handle duplicates, and approve for final generation.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="applyAllAIFixes()" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <span>Apply All AI Recommendations</span>
+                    </button>
+                    <button onclick="switchTab('generation')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm transition-all flex items-center space-x-1.5">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Proceed to Generation</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Batch Selector & Filters -->
+            <div class="glass-card rounded-xl p-4 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <label class="text-xs font-bold text-slate-600 uppercase">Batch:</label>
+                    <select id="review-batch-select" onchange="loadBatchForReview(this.value)" class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 bg-white font-medium">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <!-- Status Filter Pills -->
+                <div class="flex items-center space-x-1.5 text-xs font-semibold">
+                    <button onclick="filterReviewTable('ALL')" id="filter-btn-all" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-white">All Records</button>
+                    <button onclick="filterReviewTable('CLEAN')" id="filter-btn-clean" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">Clean</button>
+                    <button onclick="filterReviewTable('AUTO_FIXED')" id="filter-btn-autofixed" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-purple-700 hover:bg-purple-50">Auto-Fixed</button>
+                    <button onclick="filterReviewTable('FLAGGED')" id="filter-btn-flagged" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-amber-700 hover:bg-amber-50">Flagged</button>
+                    <button onclick="filterReviewTable('DUPLICATE')" id="filter-btn-duplicate" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-100 text-red-700 hover:bg-red-50">Duplicates</button>
+                </div>
+
+                <!-- Bulk Selection Actions -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="bulkApprove(true)" class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 text-xs font-bold">Approve Selected</button>
+                    <button onclick="bulkApprove(false)" class="px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 text-xs font-bold">Reject</button>
+                </div>
+            </div>
+
+            <!-- Review Table -->
+            <div class="glass-card rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar max-h-[580px]">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 border-b border-slate-200 text-slate-600 uppercase font-bold sticky top-0 z-10">
+                            <tr>
+                                <th class="p-3 w-8"><input type="checkbox" id="check-all" onchange="toggleSelectAll(this.checked)" class="rounded"></th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Participant Name (Clean / Raw)</th>
+                                <th class="p-3">Email Address</th>
+                                <th class="p-3">Department & College</th>
+                                <th class="p-3">Roll No</th>
+                                <th class="p-3">Role / Award</th>
+                                <th class="p-3">AI Issues & Fixes</th>
+                                <th class="p-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="review-table-body" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="9" class="p-8 text-center text-slate-400 italic">No batch selected. Select or upload a batch to begin audit.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 5: BULK CERTIFICATE GENERATION ================= -->
+        <section id="section-generation" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Bulk Certificate Generation Engine</h2>
+                    <p class="text-sm text-slate-500">Render 300 DPI high-resolution credentials, embed QR verification codes, sign SHA-256 digital seals, and export bulk ZIPs.</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <a id="btn-download-zip" href="#" class="hidden px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-md transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-file-zipper text-emerald-400"></i>
+                        <span>Download Batch ZIP Archive</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Generation Control Card -->
+            <div class="glass-card rounded-xl p-6 border border-slate-200 shadow-sm space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Select Batch</label>
+                        <select id="gen-batch-select" onchange="updateGenBatchDetails(this.value)" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 bg-white font-medium">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1 flex items-center justify-between">
+                            <span>Template Style</span>
+                            <button type="button" onclick="previewCurrentGenTemplate()" class="text-[10px] text-emerald-600 hover:underline">Preview</button>
+                        </label>
+                        <select id="gen-template-select" class="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 bg-white font-semibold text-slate-800">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Approved Participants</label>
+                        <div id="gen-approved-count" class="px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-sm font-bold text-slate-800">0 Ready</div>
+                    </div>
+                    <div class="flex items-end">
+                        <button id="btn-start-generation" onclick="startGeneration()" class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>Generate Certificates</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Generation Progress Banner (Hidden by default) -->
+                <div id="gen-progress-container" class="hidden p-4 rounded-xl bg-slate-900 text-white space-y-3">
+                    <div class="flex items-center justify-between text-xs font-semibold">
+                        <span id="gen-progress-status" class="flex items-center"><i class="fa-solid fa-circle-notch fa-spin mr-2 text-emerald-400"></i> Rendering high-resolution credentials...</span>
+                        <span id="gen-progress-percent" class="text-emerald-400 font-mono">100%</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="gen-progress-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full w-full transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generated Certificates Gallery -->
+            <div class="glass-card rounded-xl p-6 border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-base font-bold text-slate-900 flex items-center">
+                        <i class="fa-solid fa-file-pdf mr-2 text-red-600"></i> Issued Credentials Gallery
+                    </h3>
+                    <span id="gen-gallery-count" class="text-xs font-semibold text-slate-500">0 certificates</span>
+                </div>
+                <div id="generated-certs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 6: EMAIL DISPATCH OUTBOX ================= -->
+        <section id="section-emails" class="hidden space-y-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Certificate Dispatch Outbox</h2>
+                    <p class="text-sm text-slate-500">Simulate and track official digital credential delivery to verified participant emails.</p>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-100 border-b border-slate-200 text-slate-600 uppercase font-bold">
+                            <tr>
+                                <th class="p-3">Log ID</th>
+                                <th class="p-3">Certificate ID</th>
+                                <th class="p-3">Recipient Name</th>
+                                <th class="p-3">Recipient Email</th>
+                                <th class="p-3">Event Name</th>
+                                <th class="p-3">Status</th>
+                                <th class="p-3">Dispatched Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="email-logs-body" class="divide-y divide-slate-100">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-xs text-slate-500 text-center mt-auto">
+        <p>CertifyPro &copy; 2026 • College Event Certificate Issuance & QR Verification Platform • DeepMind AGY Architecture</p>
+    </footer>
+
+    <!-- MODAL: Certificate Preview Modal -->
+    <div id="modal-cert-preview" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <div class="p-4 bg-navy-900 text-white flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-certificate text-emerald-400"></i>
+                    <h3 id="modal-preview-title" class="font-bold text-sm">Certificate Preview</h3>
+                </div>
+                <button onclick="closeCertPreviewModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-4 bg-slate-100 flex justify-center max-h-[70vh] overflow-auto">
+                <img id="modal-preview-img" src="" alt="Certificate" class="max-w-full rounded shadow-md border border-slate-300">
+            </div>
+            <div class="p-4 bg-white border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                <div class="text-xs text-slate-500 font-mono" id="modal-preview-hash">Hash: --</div>
+                <div class="flex items-center space-x-2">
+                    <a id="modal-preview-download-png" href="#" download class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs border border-slate-300">
+                        <i class="fa-solid fa-file-image mr-1 text-blue-600"></i> Download PNG
+                    </a>
+                    <a id="modal-preview-download-pdf" href="#" download class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs border border-slate-300">
+                        <i class="fa-solid fa-file-pdf mr-1 text-red-600"></i> Download PDF
+                    </a>
+                    <a id="modal-preview-verify-btn" href="#" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-sm">
+                        <i class="fa-solid fa-qrcode mr-1"></i> Public Verification Page &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Create Event Modal -->
+    <div id="modal-new-event" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200">
+            <div class="p-4 bg-navy-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center"><i class="fa-solid fa-calendar-plus text-emerald-400 mr-2"></i> Create New College Event</h3>
+                <button onclick="closeNewEventModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-new-event" onsubmit="submitNewEvent(event)" class="p-6 space-y-4 text-xs">
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Event Name</label>
+                    <input type="text" id="ev-name" required placeholder="e.g. National Robotics Symposium 2026" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Institution / College Name</label>
+                        <input type="text" id="ev-org" required value="Apex Institute of Technology & Engineering" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Event Date</label>
+                        <input type="date" id="ev-date" required class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Category</label>
+                        <select id="ev-cat" class="w-full px-3 py-2 border rounded-lg">
+                            <option value="Technical">Technical / Hackathon</option>
+                            <option value="Academic">Academic Symposium / Conference</option>
+                            <option value="Workshop">Workshop / Bootcamp</option>
+                            <option value="Sports & Cultural">Sports & Cultural</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Certificate Style Template</label>
+                        <select id="ev-template" class="w-full px-3 py-2 border rounded-lg">
+                            <option value="modern_tech">Cyber Tech & Hackathon (Dark)</option>
+                            <option value="royal_academic">Imperial Academic Merit (Ivory & Gold)</option>
+                            <option value="sleek_minimal">Clean Emerald Workshop (Minimalist)</option>
+                            <option value="prestige_sports">Crimson Athletic & Cultural (Ribbon)</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Citation Body Text</label>
+                    <input type="text" id="ev-cite" value="has demonstrated exemplary innovation, teamwork, and technical excellence in" class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                        <span class="font-bold text-slate-600 block">Signatory 1 (Left)</span>
+                        <input type="text" id="ev-sig1-name" required placeholder="Name (e.g. Dr. Rajesh Sharma)" value="Dr. Rajesh V. Sharma" class="w-full px-2 py-1.5 border rounded">
+                        <input type="text" id="ev-sig1-title" required placeholder="Designation (e.g. Convener)" value="Head of CS & Convener" class="w-full px-2 py-1.5 border rounded">
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                        <span class="font-bold text-slate-600 block">Signatory 2 (Right)</span>
+                        <input type="text" id="ev-sig2-name" required placeholder="Name (e.g. Prof. Ananya Sen)" value="Prof. Ananya Sen" class="w-full px-2 py-1.5 border rounded">
+                        <input type="text" id="ev-sig2-title" required placeholder="Designation (e.g. Principal / Dean)" value="Dean of Academic Affairs" class="w-full px-2 py-1.5 border rounded">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeNewEventModal()" class="px-4 py-2 border rounded-lg font-semibold text-slate-600">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Change Certificate Template -->
+    <div id="modal-change-template" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <div class="p-4 bg-navy-900 text-white flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-palette text-emerald-400"></i>
+                    <div>
+                        <h3 class="font-bold text-sm">Select Certificate Design Template</h3>
+                        <p id="modal-change-tpl-subtitle" class="text-[11px] text-slate-400">For event: --</p>
+                    </div>
+                </div>
+                <button onclick="closeChangeTemplateModal()" class="text-slate-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                <input type="hidden" id="change-tpl-event-id">
+                <p class="text-xs text-slate-500">Pick any design template below. All certificates issued for this event will render in the selected design with custom logos, dual signatures, and embedded verification QR codes.</p>
+                <div id="template-options-cards" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Populated dynamically with live preview thumbnail & 1-click select button -->
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <button onclick="closeChangeTemplateModal()" class="px-4 py-2 border rounded-lg text-xs font-semibold text-slate-600 bg-white hover:bg-slate-100">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Edit Event Modal -->
+    <div id="modal-edit-event" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+            <div class="p-4 bg-navy-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm flex items-center"><i class="fa-solid fa-pen-to-square text-emerald-400 mr-2"></i> Edit Event & Certificate Configuration</h3>
+                <button onclick="closeEditEventModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-edit-event" onsubmit="submitEditEvent(event)" class="p-6 space-y-4 text-xs">
+                <input type="hidden" id="edit-ev-id">
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Event Name</label>
+                    <input type="text" id="edit-ev-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Institution / College Name</label>
+                        <input type="text" id="edit-ev-org" required class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Event Date</label>
+                        <input type="date" id="edit-ev-date" required class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Category</label>
+                        <select id="edit-ev-cat" class="w-full px-3 py-2 border rounded-lg">
+                            <option value="Technical">Technical / Hackathon</option>
+                            <option value="Academic">Academic Symposium / Conference</option>
+                            <option value="Workshop">Workshop / Bootcamp</option>
+                            <option value="Sports & Cultural">Sports & Cultural</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Certificate Design Template</label>
+                        <select id="edit-ev-template" class="w-full px-3 py-2 border rounded-lg font-bold text-slate-800 bg-white">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Citation Body Text</label>
+                    <input type="text" id="edit-ev-cite" class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                        <span class="font-bold text-slate-600 block">Signatory 1 (Left)</span>
+                        <input type="text" id="edit-ev-sig1-name" required class="w-full px-2 py-1.5 border rounded">
+                        <input type="text" id="edit-ev-sig1-title" required class="w-full px-2 py-1.5 border rounded">
+                    </div>
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
+                        <span class="font-bold text-slate-600 block">Signatory 2 (Right)</span>
+                        <input type="text" id="edit-ev-sig2-name" required class="w-full px-2 py-1.5 border rounded">
+                        <input type="text" id="edit-ev-sig2-title" required class="w-full px-2 py-1.5 border rounded">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-2 pt-2">
+                    <button type="button" onclick="closeEditEventModal()" class="px-4 py-2 border rounded-lg font-semibold text-slate-600">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold shadow-sm">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Inline Edit Participant Record -->
+    <div id="modal-edit-participant" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl border border-slate-200">
+            <div class="p-4 bg-navy-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-sm"><i class="fa-solid fa-user-pen mr-2 text-purple-400"></i> Edit Participant Record</h3>
+                <button onclick="closeEditModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="form-edit-participant" onsubmit="submitEditParticipant(event)" class="p-6 space-y-3 text-xs">
+                <input type="hidden" id="edit-id">
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Clean Full Name</label>
+                    <input type="text" id="edit-name" required class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-700 uppercase mb-1">Email Address</label>
+                    <input type="email" id="edit-email" class="w-full px-3 py-2 border rounded-lg">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Department</label>
+                        <input type="text" id="edit-dept" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Roll / USN Number</label>
+                        <input type="text" id="edit-roll" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">College</label>
+                        <input type="text" id="edit-college" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-slate-700 uppercase mb-1">Role / Award</label>
+                        <input type="text" id="edit-role" class="w-full px-3 py-2 border rounded-lg">
+                    </div>
+                </div>
+                <div class="pt-2 flex items-center justify-between">
+                    <label class="flex items-center space-x-2 text-slate-700 font-bold">
+                        <input type="checkbox" id="edit-approved" class="rounded">
+                        <span>Mark as Approved for Generation</span>
+                    </label>
+                    <button type="submit" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-bold">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Frontend Application Logic -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
