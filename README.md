@@ -53,18 +53,51 @@
 
 ---
 
-## 🚀 Running the Platform
+## 🚀 Quick Setup & How to Run
 
-### Prerequisites
-- Python 3.10+
-- Dependencies installed: `fastapi`, `uvicorn`, `pillow`, `qrcode`, `reportlab`, `python-multipart`
+Follow these quick steps to run this project on any computer (yours or a friend's):
 
-### Launch Command
+### 1. Prerequisites
+- **Git**: Download and install from [git-scm.com](https://git-scm.com/)
+- **Python 3.10+**: Download from [python.org](https://www.python.org/) *(Make sure to check "Add python.exe to PATH" during installation)*
+
+---
+
+### 2. Download (Clone) the Repository
+Open PowerShell or Terminal and run:
 ```bash
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+git clone https://github.com/Anshuman-bot/cert-gen.git
+cd cert-gen
 ```
 
-### Access URLs
-- **Admin Dashboard & Management Suite**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- **Public Credential Verification Portal**: [http://127.0.0.1:8000/verify](http://127.0.0.1:8000/verify)
-- **Direct Certificate Verification Link**: [http://127.0.0.1:8000/verify/CRT-2026-NH2-4DDAF0](http://127.0.0.1:8000/verify/CRT-2026-NH2-4DDAF0)
+---
+
+### 3. Install Dependencies
+Install all required libraries with a single command:
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 4. Start the Application
+Run this command to start the server:
+```bash
+python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+*(Alternative: If you have Node.js installed, you can simply run `npm run dev`)*
+
+---
+
+### 5. Access the Platform
+
+- **On your Computer**:
+  - 🖥️ **Admin Dashboard**: [http://localhost:8000/](http://localhost:8000/)
+  - 🔍 **Public Verification Portal**: [http://localhost:8000/verify](http://localhost:8000/verify)
+
+- **On your Phone (via Wi-Fi or Mobile Hotspot)**:
+  1. Find your computer's IP address: Run `ipconfig` in PowerShell and look for `IPv4 Address` (e.g., `192.168.1.50`).
+  2. Connect your phone to the same Wi-Fi or mobile hotspot.
+  3. Open your phone's browser and go to:
+     `http://<your-pc-ip>:8000` (e.g. `http://192.168.1.50:8000`)
+
